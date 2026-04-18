@@ -135,6 +135,12 @@
 
     const receipt = document.getElementById("receipt");
 
+    // Temporarily set fixed width for consistent PDF generation
+    const originalWidth = receipt.style.width;
+    const originalMaxWidth = receipt.style.maxWidth;
+    receipt.style.width = "800px";
+    receipt.style.maxWidth = "800px";
+
     try {
         const canvas = await html2canvas(receipt, {
         scale: 3,
@@ -189,6 +195,10 @@
     } catch (err) {
         console.error(err);
         alert("PDF generation failed. Please try again.");
+    } finally {
+        // Restore original width
+        receipt.style.width = originalWidth;
+        receipt.style.maxWidth = originalMaxWidth;
     }
 
     btn.classList.remove("loading");
