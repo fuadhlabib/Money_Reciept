@@ -154,12 +154,14 @@
         });
 
         const pageW = pdf.internal.pageSize.getWidth();
-        const margin = 10;
-        const printW = pageW - margin * 2;
         const pageH = pdf.internal.pageSize.getHeight();
+        const margin = 10;
+
+        const printW = pageW - margin * 2;
+        let printH = (canvas.height / canvas.width) * printW;
 
         if (printH > pageH - margin * 2) {
-        printH = pageH - margin * 2;
+            printH = pageH - margin * 2;
         }
         pdf.addImage(
         imgData,
