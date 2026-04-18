@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fearless English – Receipt Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="money_reciept.js" defer></script>
+    <link rel="stylesheet" href="money_reciept.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <!-- ══ LEFT PANEL ══ -->
+      <div class="left-panel">
+        <div class="brand">
+          <div class="brand-icon">📋</div>
+          <div class="brand-text">
+            <h1>Receipt Generator</h1>
+            <p>Fearless English — Kishoreganj, Dhaka</p>
+          </div>
+        </div>
+
+        <!-- ── Receipt Info ── -->
+        <div class="section-title">Receipt Info</div>
+        <div class="form-grid">
+          <div class="field full">
+            <label>Receipt Number</label>
+            <input type="text" id="receiptNo" value="2032211" />
+          </div>
+        </div>
+
+        <!-- ── Branding ── -->
+        <div class="section-title">Branding</div>
+
+        <div class="upload-field" style="margin-bottom: 6px">
+          <label>Logo Image</label>
+          <div class="upload-zone" id="logoZone">
+            <input type="file" id="logoFile" accept="image/*" />
+            <div class="uz-icon">🖼️</div>
+            <div class="uz-text">
+              <strong>Upload Logo</strong>
+              PNG, JPG, SVG — shown in receipt header
+            </div>
+          </div>
+          <div class="upload-preview" id="logoPrev">
+            <img id="logoThumb" src="" alt="logo preview" />
+            <span class="up-name" id="logoFileName"></span>
+            <button class="up-clear" onclick="clearLogo()">✕ Remove</button>
+          </div>
+        </div>
+
+        <!-- ── Student Details ── -->
+        <div class="section-title">Student Details</div>
+        <div class="form-grid">
+          <div class="field full">
+            <label>Student Name</label>
+            <input type="text" id="studentName" value="Minhazul Islam" />
+          </div>
+          <div class="field">
+            <label>Reg. No</label>
+            <input type="text" id="regNo" value="108630" />
+          </div>
+          <!-- <div class="field">
+            <label>Student ID</label>
+            <input type="text" id="studentId" value="250911090" />
+          </div> -->
+          <div class="field full">
+            <label>Date of Admission</label>
+            <input type="date" id="admissionDate" value="2025-08-27" />
+          </div>
+          <div class="field full">
+            <label>Course</label>
+            <input type="text" id="course" value="IELTS Therapy" />
+          </div>
+          <div class="field">
+            <label>Type</label>
+            <input type="text" id="type" value="Non Residential" />
+          </div>
+          <div class="field">
+            <label>Year</label>
+            <input type="text" id="year" value="2025" />
+          </div>
+          <div class="field">
+            <label>Month</label>
+            <input type="text" id="month" value="September" />
+          </div>
+          <div class="field">
+            <label>Shift</label>
+            <input type="text" id="shift" value="Morning" />
+          </div>
+        </div>
+
+        <!-- ── Payment Details ── -->
+        <div class="section-title">Payment Details</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Payment Method</label>
+            <input type="text" id="paymentMethod" value="Cash" />
+          </div>
+          <div class="field">
+            <label>Fee</label>
+            <input type="text" id="fee" value="10,000" />
+          </div>
+          <div class="field">
+            <label>Special Discount</label>
+            <input type="text" id="discount" value="2,000" />
+          </div>
+          <div class="field">
+            <label>Payable Amount</label>
+            <input type="text" id="payable" value="8,000" />
+          </div>
+          <div class="field">
+            <label>Paid Amount</label>
+            <input type="text" id="paid" value="5,000" />
+          </div>
+          <div class="field">
+            <label>Due Amount</label>
+            <input type="text" id="due" value="3,000" />
+          </div>
+          <div class="field full">
+            <label>Date of Payment</label>
+            <input type="date" id="payDate" value="2025-08-27" />
+          </div>
+          <div class="field full">
+            <label>Next Date of Payment</label>
+            <input type="date" id="nextPayDate" value="2025-09-01" />
+          </div>
+        </div>
+
+        <!-- ── Signature ── -->
+        <div class="section-title">Signature</div>
+        <div class="form-grid">
+          <div class="field full">
+            <label>Authorized Person Name</label>
+            <input type="text" id="signatureName" value="Minhaz" />
+          </div>
+        </div>
+
+        <div class="upload-field" style="margin-top: 9px">
+          <label>Signature Image (optional)</label>
+          <div class="upload-zone" id="sigZone">
+            <input type="file" id="sigFile" accept="image/*" />
+            <div class="uz-icon">✍️</div>
+            <div class="uz-text">
+              <strong>Upload Signature</strong>
+              Appears above the name line in receipt
+            </div>
+          </div>
+          <div class="upload-preview" id="sigPrev">
+            <img id="sigThumb" src="" alt="sig preview" />
+            <span class="up-name" id="sigFileName"></span>
+            <button class="up-clear" onclick="clearSig()">✕ Remove</button>
+          </div>
+        </div>
+
+        <!-- ── Receipt Footer ── -->
+        <div class="section-title">Receipt Footer</div>
+        <div class="form-grid">
+          <div class="field full">
+            <label>Note</label>
+            <textarea
+              id="noteText"
+              style="
+                font-size: 12px;
+                padding: 8px;
+                border: 1px solid var(--border);
+                border-radius: 4px;
+                font-family: inherit;
+                resize: vertical;
+                min-height: 60px;
+              "
+            >
+Note: This receipt serves as official proof of payment, so please keep it safe for future reference.</textarea
+            >
+          </div>
+          <div class="field full">
+            <label>Address/Footer</label>
+            <input
+              type="text"
+              id="footerText"
+              value="H-37, R-06, B-H, Kishoreganj, Dhaka, Mobile: +8801712345678"
+            />
+          </div>
+        </div>
+
+        <button class="btn-generate" id="genBtn" onclick="generatePDF()">
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+            />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="12" y1="11" x2="12" y2="17" />
+            <line x1="9" y1="14" x2="15" y2="14" />
+          </svg>
+          Generate PDF
+        </button>
+      </div>
+      <!-- /left-panel -->
+
+      <!-- ══ RIGHT PANEL ══ -->
+      <div class="right-panel">
+        <div class="preview-label">Live Preview</div>
+        <div class="preview-wrap">
+          <!-- ══ THE RECEIPT ══ -->
+          <div id="receipt">
+            <!-- HEADER -->
+            <div class="r-header">
+              <div class="r-logo-area" id="rLogoArea">
+                <img
+                  id="rLogoImg"
+                  src="fareless_english_logo.jpeg"
+                  alt="logo"
+                  style="
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    border-radius: 50%;
+                  "
+                />
+              </div>
+
+              <div class="r-header-center">
+                <div class="r-title">FEARLESS ENGLISH</div>
+                <div class="r-subtitle">
+                  Money Receipt (1) #<span id="pReceiptNo">2032211</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- BODY -->
+            <div class="r-body">
+              <div class="r-row">
+                <div class="r-cell">
+                  <span class="r-cell-label">Student Name</span
+                  ><span class="r-cell-sep">:</span
+                  ><span class="r-cell-val" id="pStudentName"
+                    >Minhazul Islam</span
+                  >
+                </div>
+                <div class="r-cell">
+                  <span class="r-cell-label">Payment Method</span
+                  ><span class="r-cell-sep">:</span
+                  ><span class="r-cell-val" id="pPaymentMethod">Cash</span>
+                </div>
+              </div>
+              <div class="r-row">
+                <div class="r-cell">
+                  <span class="r-cell-label">Phone No</span
+                  ><span class="r-cell-sep">:</span
+                  ><span class="r-cell-val" id="pRegNo">01712345678</span>
+                </div>
+                <div class="r-cell">
+                  <span class="r-cell-label">Fee</span
+                  ><span class="r-cell-sep">:</span
+                  ><span class="r-cell-val" id="pFee">10,000</span>
+                </div>
+              </div>
+              <div class="r-row">
+                <div class="r-cell">
+                  <span class="r-cell-label">Date of Admission</span
+                  ><span class="r-cell-sep">:</span
+                  ><span class="r-cell-val" id="pAdmissionDate"
+                    >27 Aug, 2025</span
+                  >
+                </div>
+                <div class="r-cell">
+                  <span class="r-cell-label">Special Discount</span
+                  ><span class="r-cell-sep">:</span
+                  ><span class="r-cell-val" id="pDiscount">2,000</span>
+                </div>
+              </div>
+              <div class="r-row">
+                <div class="r-cell">
+                  <span class="r-cell-label">Course</span
+                  ><span class="r-cell-sep">:</span
+                  ><span class="r-cell-val" id="pCourse">IELTS Therapy</span>
+                </div>
+                <div class="r-cell">
+                  <span class="r-cell-label">Payable Amount</span
+                  ><span class="r-cell-sep">:</span
+                  ><span class="r-cell-val" id="pPayable">8,000</span>
+                </div>
+              </div>
+              <div class="r-row">
+                <div class="r-cell">
+                  <span class="r-cell-label">Type</span
+                  ><span class="r-cell-sep">:</span
+                  ><span class="r-cell-val" id="pType">Non Residential</span>
+                </div>
+                <div class="r-cell">
+                  <span class="r-cell-label r-bold">Paid Amount</span
+                  ><span class="r-cell-sep r-bold">:</span
+                  ><span class="r-cell-val r-bold" id="pPaid">5,000</span>
+                </div>
+              </div>
+              <div class="r-row">
+                <div class="r-cell">
+                  <span class="r-cell-label">Year</span
+                  ><span class="r-cell-sep">:</span
+                  ><span class="r-cell-val" id="pYear">2025</span>
+                </div>
+                <div class="r-cell">
+                  <span class="r-cell-label r-bold">Due Amount</span
+                  ><span class="r-cell-sep r-bold">:</span
+                  ><span class="r-cell-val r-bold" id="pDue">3,000</span>
+                </div>
+              </div>
+              <div class="r-row">
+                <div class="r-cell">
+                  <span class="r-cell-label">Month</span
+                  ><span class="r-cell-sep">:</span
+                  ><span class="r-cell-val" id="pMonth">September</span>
+                </div>
+                <div class="r-cell">
+                  <span class="r-cell-label">Date of Payment</span
+                  ><span class="r-cell-sep">:</span
+                  ><span class="r-cell-val" id="pPayDate">27 Aug, 2025</span>
+                </div>
+              </div>
+              <div class="r-row">
+                <div class="r-cell">
+                  <span class="r-cell-label">Shift</span
+                  ><span class="r-cell-sep">:</span
+                  ><span class="r-cell-val" id="pShift">Morning</span>
+                </div>
+                <div class="r-cell">
+                  <span class="r-cell-label r-bold">Next Date of Payment</span
+                  ><span class="r-cell-sep r-bold">:</span
+                  ><span class="r-cell-val r-bold" id="pNextPayDate"
+                    >01 Sep, 2025</span
+                  >
+                </div>
+              </div>
+
+              <!-- Signature row -->
+              <div class="r-sig-row">
+                <div class="r-sig-left"></div>
+                <div class="r-sig-right">
+                  <div class="r-sig-name-wrap">
+                    <img
+                      id="rSigImg"
+                      class="r-sig-img"
+                      src=""
+                      alt="signature"
+                    />
+                    <div class="r-sig-line"></div>
+                    <div class="r-sig-name" id="pSigName">Minhaz</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- NOTE -->
+            <div class="r-note" id="pNote">
+              Note: This receipt serves as official proof of payment, so please
+              keep it safe for future reference.
+            </div>
+
+            <!-- FOOTER -->
+            <div class="r-footer" id="pFooter">
+              H-37, R-06, B-H, Kishoreganj, Dhaka, Mobile: +8801712345678
+            </div>
+          </div>
+          <!-- /receipt -->
+        </div>
+      </div>
+    </div>
+    <!-- /page-shell -->
+  </body>
+</html>
