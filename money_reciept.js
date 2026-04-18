@@ -196,9 +196,9 @@
         console.error(err);
         alert("PDF generation failed. Please try again.");
     } finally {
-        // Restore original width
-        receipt.style.width = originalWidth;
-        receipt.style.maxWidth = originalMaxWidth;
+        // Restore original width by removing inline styles
+        receipt.style.removeProperty('width');
+        receipt.style.removeProperty('maxWidth');
     }
 
     btn.classList.remove("loading");
